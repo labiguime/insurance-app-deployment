@@ -1,0 +1,13 @@
+{
+  "AWSEBDockerrunVersion": "1",
+  "Image": {
+    "Name": "122119488469.dkr.ecr.ca-central-1.amazonaws.com/haywards-ecr:latest",
+    "Update": "true"
+  },
+  "Command": "bundle exec sidekiq -q default -q mailers",
+  "Ports": [
+    {
+      "ContainerPort": "3000"
+    }
+  ]
+}

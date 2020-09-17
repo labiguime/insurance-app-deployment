@@ -1,0 +1,29 @@
+- Go to Amazon CodePipeline
+- Create new pipeline
+- Enter a name for the pipeline (insurance-production for instance)
+- Create a new service role (or could use existing, but create new the first time)
+- Role name should be generated automatically but could be customized if you want to identify it more easily
+- For source stage select github and choose all the right parameters
+- When at the codebuild step, create new build project. A popup window should appear
+- Select a CodeBuild project name (insurance-production-codebuild for instance)
+- Under Environment choose: Managed Image, operating system=Ubuntu, Runtime= Standard, image = standard:4.0 leave the rest to default and check the box under Privileged
+- Under service role create a new service role or you could use an existing one if creating a development or staging pipeline. /!\ Keep that service role name in mind
+- Go to additional configuration and add the following environment variables:
+
+(Modify if necessary)
+AWS_ACCOUNT_ID 122119488469 /!\ To change for sure
+AWS_DEFAULT_REGION ca-central-1
+IMAGE_REPO_NAME haywards-ecr /!\
+CB_ENV staging
+CB_MASTER_KEY 
+
+- Select next and the popup window should disappear
+- Back to the pipeline creation page, select next
+- On deploy stage page, choose your application and the corresponding environment
+
+The pipeline is now created but should fail at build. To fix it, do the following:
+- Go to the IAM console (https://console.aws.amazon.com/iam/home#/home).
+- Under policies (navigation panel on the left), create a new policy that will correspond to the content of the "codebuild_policy.json" file located in the README folder. /!\ Keep the name of the created policy in mind
+- Then, go to Roles, and for the service role that you created earlier (whom name you should have kept in mind), attach the policy that you just created.
+- Go back to your pipeline and retry for the failed step.
+- Your project should deploy after a short while (it will take 4-5 min the first time).

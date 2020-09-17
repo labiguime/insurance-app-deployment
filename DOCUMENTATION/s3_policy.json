@@ -1,0 +1,21 @@
+{
+  "Id": "Policy1596158377469",
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Stmt1596158375758",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::haywards_utils/*",
+      "Principal": {
+        "AWS": [
+          "arn:aws:iam::122119488469:role/service-role/codebuild-docker-build-service-role",
+          "arn:aws:iam::122119488469:role/aws-elasticbeanstalk-ec2-role"
+        ]
+      }
+    }
+  ]
+}

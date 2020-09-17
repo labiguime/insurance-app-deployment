@@ -1,0 +1,28 @@
+version: 0.2
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
+      - echo Pulling the docker image
+      - docker pull $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:latest || true
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image...
+      - DOCKER_BUILDKIT=1 docker build -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:latest --cache-from $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:latest --build-arg master_key=$CB_MASTER_KEY --build-arg environment=$CB_ENV --build-arg AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION --build-arg AWS_CONTAINER_CREDENTIALS_RELATIVE_URI=$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI --build-arg BUILDKIT_INLINE_CACHE=1 .
+
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker image...
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:latest
+      - echo Clearing the output
+      - shopt -s extglob
+      - echo `ls -a`
+      - echo `rm -rf vendor tmp app bin config db lib public log node_modules oldfiles spec storage tmp web_docker_file worker_docker_file how_to_setup`
+      - echo `rm .generators .gitignore .rakeTasks .rspec .ruby-version AWS.md Dockerfile EBDeployInstructions.md Dockerrun.worker.json Gemfile Gemfile.lock Guardfile README.md Rakefile STACKOVERFLOWGUIDES.md buildspec-step2.yml buildspec.yml config.ru nginx.md package.json yarn.lock`
+      - echo `ls -a`
+artifacts:
+  files:
+    - '**/*'

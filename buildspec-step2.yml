@@ -1,0 +1,22 @@
+version: 0.2
+
+phases:
+  build:
+    commands:
+      - echo Starting to build for worker environment on `date`
+      - echo Removing previous Dockerfile...
+      - rm Dockerrun.aws.json
+      - echo Renaming Dockerrun.worker...
+      - mv Dockerrun.worker.json Dockerrun.aws.json
+      - echo Removing unnecessary folder
+      - echo `ls -a`
+      - echo `rm -rf vendor tmp app bin config db lib public log node_modules oldfiles spec storage tmp web_docker_file worker_docker_file .ebextensions .platform how_to_setup`
+      - echo `rm .generators .gitignore .rakeTasks .rspec .ruby-version AWS.md Dockerfile EBDeployInstructions.md Gemfile Gemfile.lock Guardfile README.md Rakefile STACKOVERFLOWGUIDES.md buildspec-step2.yml buildspec.yml config.ru nginx.md package.json yarn.lock`
+      - echo `ls -a`
+      - echo Build phase successful
+  post_build:
+    commands:
+      - echo Build for worker environment completed on `date`
+artifacts:
+  files:
+    - '**/*'
